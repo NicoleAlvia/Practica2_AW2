@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+//model vehiculo 
+import { Sequelize, DataTypes } from 'sequelize';
+
+export class VehiculoModel extends Model<Vehiculo> {
+  static init(sequelize: Sequelize) {
+    return this.define(
+      'vehiculo',
+      {
+        idVehiculo: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        marca: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        modelo: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        placa: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          unique: true,
+        },
+        color: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        capacidadPasajeros: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+      },
+      { sequelize }
+    );
+  }
+}
+
+//model espacio parque 
+import { Sequelize, DataTypes } from 'sequelize';
+
+export class EspacioParqueoModel extends Model<EspacioParqueo> {
+  static init(sequelize: Sequelize) {
+    return this.define(
+      'espacio_parqueo',
+      {
+        idEspacio: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        ubicacion: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        tipoVehiculo: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        estado: {
+          type: DataTypes.STRING,
+          allowNull: false,
+          defaultValue: 'libre',
+        },
+      },
+      { sequelize }
+    );
+  }
+}
+
+// modelo parqueo
+import { Sequelize, DataTypes } from 'sequelize';
+
+export class ParqueoModel extends Model<Parqueo> {
+  static init(sequelize: Sequelize) {
+    return this.define(
+      'parqueo',
+      {
+        idParqueo: {
+          type: DataTypes.INTEGER,
+          autoIncrement: true,
+          primaryKey: true,
+        },
+        idVehiculo: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: VehiculoModel,
+            key: 'idVehiculo',
+          },
+        },
+        idEspacio: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          references: {
+            model: EspacioParqueoModel,
+            key: 'idEspacio',
+          },
+        },
+        fechaHoraIngreso: {
+          type: DataTypes.DATE,
+          allowNull: false,
+          defaultValue: DataTypes.NOW,
+        },
+        fechaHoraSalida: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
+      },
+      { sequelize }
+    );
+  }
+}
