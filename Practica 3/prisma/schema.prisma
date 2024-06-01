@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model vehiculo {
+  id          Int          @id @default(autoincrement())
+  Descripcion String?
+  Placa  Placa[]
+  Color             String? 
+}
+
+model Espacio_parqueo {
+  id                    Int          @id @default(autoincrement())
+  Ddscripcion           String?  @default("")
+}
+
+
+model parqueo {
+  id                  Int        @id @default(autoincrement())
+  Fecha_entrada       String?
+  Fecha_salida        String?
+  Hora_hasta          String?
+  vehiculo             vehiculo    @relation(fields: [vehiculoId], references: [id])
+  Espacio_parqueo         Espacio_parqueo @relation(fields: [Espacio_parqueoaId], references: [id])
+
+}
